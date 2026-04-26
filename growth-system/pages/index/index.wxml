@@ -1,0 +1,102 @@
+<view class="container">
+  <view class="header">
+    <text class="title">🌟 饭团英雄之旅</text>
+    <text class="subtitle">加油，勇敢的饭团！</text>
+  </view>
+
+  <view class="badge-section">
+    <view class="badge-card bravery {{currentType === 'bravery' ? 'active' : ''}}">
+      <view class="badge-icon">{{braveryBadgeIcon}}</view>
+      <text class="badge-name">{{braveryBadgeName}}</text>
+      <text class="badge-level">{{braveryBadgeLevel}}</text>
+    </view>
+    <view class="badge-card selfcare {{currentType === 'selfcare' ? 'active' : ''}}">
+      <view class="badge-icon">{{selfcareBadgeIcon}}</view>
+      <text class="badge-name">{{selfcareBadgeName}}</text>
+      <text class="badge-level">{{selfcareBadgeLevel}}</text>
+    </view>
+  </view>
+
+  <view class="tab-section">
+    <button class="tab-btn bravery {{currentType === 'bravery' ? 'active' : ''}}" bindtap="switchType" data-type="bravery">
+      🔥 勇气分
+    </button>
+    <button class="tab-btn selfcare {{currentType === 'selfcare' ? 'active' : ''}}" bindtap="switchType" data-type="selfcare">
+      ⭐ 自理分
+    </button>
+  </view>
+
+  <view class="score-card {{currentType}}">
+    <view class="score-header">
+      <view class="score-icon">{{currentType === 'bravery' ? '🔥' : '⭐'}}</view>
+      <text class="score-title">{{currentType === 'bravery' ? '勇气分' : '自理分'}}</text>
+    </view>
+
+    <view class="score-display">
+      <text class="score-main">{{currentType === 'bravery' ? braveryScore : selfcareScore}}</text>
+      <text class="score-total"> / {{currentType === 'bravery' ? '100' : '60'}}</text>
+    </view>
+
+    <view class="progress-bar">
+      <view class="progress-fill" style="width:{{currentType === 'bravery' ? braveryPercent : selfcarePercent}}%"></view>
+    </view>
+
+    <view class="input-area">
+      <view class="input-row">
+        <input type="number" class="custom-input" placeholder="分数" value="{{currentType === 'bravery' ? braveryInput : selfcareInput}}" bindinput="onScoreInput" />
+        <input type="text" class="event-input" placeholder="记录原因（选填）" value="{{currentType === 'bravery' ? braveryEvent : selfcareEvent}}" bindinput="onEventInput" />
+      </view>
+      <view class="btn-row">
+        <button class="score-btn add" bindtap="{{currentType === 'bravery' ? 'onBraveryAdd' : 'onSelfcareAdd'}}">加分</button>
+        <button class="score-btn minus" bindtap="{{currentType === 'bravery' ? 'onBraveryMinus' : 'onSelfcareMinus'}}">扣分</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="records-section">
+    <text class="section-title">📜 成长记录</text>
+    <view class="filter-btns">
+      <button class="filter-btn {{filterType === 'all' ? 'active' : ''}}" bindtap="setFilter" data-type="all">全部</button>
+      <button class="filter-btn {{filterType === 'bravery' ? 'active' : ''}}" bindtap="setFilter" data-type="bravery">🔥 勇气</button>
+      <button class="filter-btn {{filterType === 'selfcare' ? 'active' : ''}}" bindtap="setFilter" data-type="selfcare">⭐ 自理</button>
+    </view>
+    <view class="records-list">
+      <block wx:for="{{filteredRecords}}" wx:key="id">
+        <view class="record-item {{item.type}}" bindlongpress="onRecordLongPress" data-id="{{item.id}}" data-index="{{index}}">
+          <view class="record-icon {{item.amount < 0 ? 'gray' : ''}}">{{item.type === 'bravery' ? '🔥' : '⭐'}}</view>
+          <view class="record-content">
+            <text class="record-event">{{item.event}}</text>
+            <text class="record-meta">{{item.time}}</text>
+          </view>
+          <text class="record-change {{item.amount < 0 ? 'minus' : ''}}">{{item.amount > 0 ? '+' : ''}}{{item.amount}}</text>
+        </view>
+      </block>
+      <view wx:if="{{filteredRecords.length === 0}}" class="empty-records">
+        还没有记录，开始加分吧！
+      </view>
+    </view>
+  </view>
+
+  <view class="roadmap-section">
+    <view class="roadmap-card">
+      <text class="roadmap-title bravery-text">🔥 勇士之路</text>
+      <view class="roadmap-grid">
+        <text wx:for="{{braveryRoadmap}}" wx:key="index" class="roadmap-item {{item.status}}">{{item.name}}</text>
+      </view>
+    </view>
+    <view class="roadmap-card">
+      <text class="roadmap-title selfcare-text">⭐ 达人之路</text>
+      <view class="roadmap-grid">
+        <text wx:for="{{selfcareRoadmap}}" wx:key="index" class="roadmap-item {{item.status}}">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="data-section">
+    <view class="data-buttons">
+      <button class="data-btn export" bindtap="onExportData">📤 导出数据</button>
+      <button class="data-btn import" bindtap="onImportData">📥 导入数据</button>
+    </view>
+  </view>
+</view>
